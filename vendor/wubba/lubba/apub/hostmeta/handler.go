@@ -1,11 +1,9 @@
 package hostmeta
 
 import (
-	"encoding/xml"
 	"fmt"
-	"io"
 	"net/http"
-	"strings"
+	"wubba/lubba/apub/xml"
 )
 
 type Handler struct {
@@ -21,9 +19,6 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	metainfo.Template = fmt.Sprintf("https://%s/.well-known/webfinger?resource={uri}", r.Host)
 
 	w.Header().Set("Content-Type", MimeType+"; charset=utf-8")
-	// write xml header
-	io.WriteString(w, strings.Trim(xml.Header, "\n"))
 	// encode xml document
-	enc := xml.NewEncoder(w)
-	enc.Encode(&metainfo)
+	xml.MarshalHTTP(w, &metainfo)
 }

@@ -1,9 +1,12 @@
 package apub
 
-import "net/url"
+import "wubba/lubba/apub"
 
-// URLFinder finds a url given a string
+type Link = apub.Link
+type UserInfo = apub.UserInfo
+
+// InfoFinder finds a UserInfo given a string
 // returns nil, nil on not found
 // returns url, nil on found
 // returns nil, error on error
-type URLFinder func(string) (*url.URL, error)
+type InfoFinder func(string) (UserInfo, error)

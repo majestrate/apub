@@ -5,11 +5,10 @@ import (
 	"github.com/majestrate/apub"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"net/url"
 	"os"
 )
 
-func findUser(query string) (*url.URL, error) {
+func findUser(query string) (apub.UserInfo, error) {
 	logrus.Infof("find user: %s", query)
 	return nil, nil
 }

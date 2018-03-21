@@ -2,7 +2,6 @@ package apub
 
 import (
 	"net/http"
-	"wubba/lubba/apub"
 	"wubba/lubba/apub/hostmeta"
 	"wubba/lubba/apub/webfinger"
 )
@@ -14,8 +13,8 @@ type APubHandler struct {
 }
 
 // Setup sets up routes
-func (a *APubHandler) Setup(finder URLFinder, setupRoute func(string, http.Handler)) {
-	a.finger.Finder = apub.UserFinder(finder)
+func (a *APubHandler) Setup(finder func(string) (UserInfo, error), setupRoute func(string, http.Handler)) {
+	a.finger.Finder = finder
 	setupRoute("/.well-known/host-meta", &a.hostmeta)
 	setupRoute("/.well-known/webfinger", &a.finger)
 	return

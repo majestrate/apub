@@ -19,13 +19,12 @@ func main() {
 		return
 	}
 	addr := os.Args[1]
-	hostname := os.Args[2]
 	var handler apub.APubHandler
 	r := gin.Default()
-	handler.Setup(findUser, hostname, func(path string, handler http.Handler) {
+	handler.Setup(findUser, func(path string, handler http.Handler) {
 		r.Any(path, gin.WrapH(handler))
 	})
-	logrus.Infof("listening on %s as %s", addr, hostname)
+	logrus.Infof("listening on %s", addr)
 	err := http.ListenAndServe(addr, r)
 	if err != nil {
 		logrus.Errorf("http.ListenAndServe(): %s", err.Error())

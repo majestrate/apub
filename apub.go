@@ -14,9 +14,8 @@ type APubHandler struct {
 }
 
 // Setup sets up routes
-func (a *APubHandler) Setup(finder URLFinder, hostname string, setupRoute func(string, http.Handler)) {
+func (a *APubHandler) Setup(finder URLFinder, setupRoute func(string, http.Handler)) {
 	a.finger.Finder = apub.UserFinder(finder)
-	a.hostmeta.Hostname = hostname
 	setupRoute("/.well-known/host-meta", &a.hostmeta)
 	setupRoute("/.well-known/webfinger", &a.finger)
 	return

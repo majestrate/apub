@@ -1,7 +1,6 @@
 package hostmeta
 
 import (
-	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -10,7 +9,6 @@ import (
 )
 
 type Handler struct {
-	Hostname string
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -18,9 +16,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	w.Header().Set("Content-Type", "application/xrd+xml; charset=utf-8")
-	buff := new(bytes.Buffer)
-	io.WriteString(buff, strings.Trim(xml.Header, "\n"))
-	fmt.Fprintf(buff, `<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><Link rel="lrdd" template="https://%s/.well-known/webfinger?resource={uri}" type="application/xrd+xml" /></XRD>`, h.Hostname)
-	io.Copy(w, buff)
+	var metainfo MetaInfo
+	// set template
+	metainfo.Template = fmt.Sprintf("https://%s/.well-known/webfinger?resource={uri}", r.Host)
+
+	w.Header().Set("Content-Type", MimeType+"; charset=utf-8")
+	// write xml header
+	io.WriteString(w, strings.Trim(xml.Header, "\n"))
+	// encode xml document
+	enc := xml.NewEncoder(w)
+	enc.Encode(&metainfo)
 }

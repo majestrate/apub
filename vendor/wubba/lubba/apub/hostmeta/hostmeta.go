@@ -5,7 +5,7 @@ import (
 )
 
 type MetaInfo struct {
-	WFTemplate string
+	Template string
 }
 
 type miXRDLink struct {
@@ -23,7 +23,18 @@ func (info *MetaInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	var x XRD
 	err := d.Decode(&x)
 	if err == nil {
-		info.WFTemplate = x.Link.Template
+		info.Template = x.Link.Template
 	}
 	return err
+}
+
+func (info *MetaInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	return e.Encode(&XRD{
+		NS: XMLNS,
+		Link: miXRDLink{
+			Rel:      XMLRel,
+			Template: info.Template,
+			Type:     MimeType,
+		},
+	})
 }

@@ -7,24 +7,17 @@ import (
 	"wubba/lubba/apub/webfinger"
 )
 
-// Router implements http.Handler
-type Router struct {
-	mux      *http.ServeMux
+// APubHandler
+type APubHandler struct {
 	finger   webfinger.WebFinger
-	hostmeta *hostmeta.Handler
+	hostmeta hostmeta.Handler
 }
 
-func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	router.mux.ServeHTTP(w, r)
-}
-
-// create a new router given a URLFinder that handles webfinger
-func NewRouter(finder URLFinder, hostname string) (r *Router) {
-	r = new(Router)
-	r.finger.Finder = apub.UserFinder(finder)
-	r.hostmeta = hostmeta.NewHandler(hostname)
-	r.mux = http.NewServeMux()
-	r.mux.Handle("/.well-known/host-meta", r.hostmeta)
-	r.mux.Handle("/.well-known/webfinger", &r.finger)
+// Setup sets up routes
+func (a *APubHandler) Setup(finder URLFinder, hostname string, setupRoute func(string, http.Handler)) {
+	a.finger.Finder = apub.UserFinder(finder)
+	a.hostmeta.Hostname = hostname
+	setupRoute("/.well-known/host-meta", &a.hostmeta)
+	setupRoute("/.well-known/webfinger", &a.finger)
 	return
 }

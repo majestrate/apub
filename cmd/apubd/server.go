@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/majestrate/apub"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -19,9 +20,13 @@ func main() {
 	}
 	addr := os.Args[1]
 	hostname := os.Args[2]
-	router := apub.NewRouter(findUser, hostname)
+	var handler apub.APubHandler
+	r := gin.Default()
+	handler.Setup(findUser, hostname, func(path string, handler http.Handler) {
+		r.Any(path, gin.WrapH(handler))
+	})
 	logrus.Infof("listening on %s as %s", addr, hostname)
-	err := http.ListenAndServe(addr, router)
+	err := http.ListenAndServe(addr, r)
 	if err != nil {
 		logrus.Errorf("http.ListenAndServe(): %s", err.Error())
 	}

@@ -11,8 +11,8 @@ type Router struct {
 	finger webfinger.WebFinger
 }
 
-func (r *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	r.mux.ServeHTTP(w, r)
+func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	router.mux.ServeHTTP(w, r)
 }
 
 // create a new router given a UserFinder

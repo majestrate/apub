@@ -9,5 +9,5 @@ type WebFinger struct {
 	Finder apub.UserFinder
 }
 
-func (w *WebFinger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (wf *WebFinger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }

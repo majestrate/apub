@@ -43,6 +43,7 @@ func (wf *WebFinger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// fallback to xml
 		w.Header().Set("Content-Type", XMLType+"; encoding=utf-8")
 		xml.MarshalHTTP(w, &XRD{
+			NS:      XMLNS,
 			Subject: u.Subject(),
 			Alias:   u.Alias(),
 			Links:   u.Links(),

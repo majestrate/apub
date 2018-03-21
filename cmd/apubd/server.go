@@ -8,7 +8,10 @@ import (
 	"os"
 )
 
-func findUser(query string) (apub.UserInfo, error) {
+type APubDemo struct {
+}
+
+func (demo *APubDemo) FindUser(query string) (*apub.UserInfo, error) {
 	logrus.Infof("find user: %s", query)
 	return nil, nil
 }
@@ -18,9 +21,10 @@ func main() {
 		return
 	}
 	addr := os.Args[1]
+	var demo APubDemo
 	var handler apub.APubHandler
 	r := gin.Default()
-	handler.Setup(findUser, func(path string, handler http.Handler) {
+	handler.Setup(&demo, func(path string, handler http.Handler) {
 		r.Any(path, gin.WrapH(handler))
 	})
 	logrus.Infof("listening on %s", addr)

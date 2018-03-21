@@ -19,6 +19,6 @@ func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func NewRouter(finder UserFinder) (r Router) {
 	r.finger.Finder = finder
 	r.mux = http.NewServeMux()
-	r.mux.Handle("/.well-known/webfinger", r.finger)
+	r.mux.Handle("/.well-known/webfinger", &r.finger)
 	return
 }

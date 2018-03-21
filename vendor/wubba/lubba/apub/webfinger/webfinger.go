@@ -20,6 +20,10 @@ type Response struct {
 }
 
 func (wf *WebFinger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	if wf.Finder == nil {
 		// no finder
 		w.WriteHeader(http.StatusNotFound)

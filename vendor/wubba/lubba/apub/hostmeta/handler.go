@@ -14,6 +14,10 @@ type Handler struct {
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	w.Header().Set("Content-Type", "application/xrd+xml; charset=utf-8")
 	buff := new(bytes.Buffer)
 	io.WriteString(buff, strings.Trim(xml.Header, "\n"))

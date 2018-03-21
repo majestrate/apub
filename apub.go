@@ -2,6 +2,7 @@ package apub
 
 import (
 	"net/http"
+	"wubba/lubba/apub"
 	"wubba/lubba/apub/webfinger"
 )
 
@@ -15,9 +16,9 @@ func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	router.mux.ServeHTTP(w, r)
 }
 
-// create a new router given a UserFinder
-func NewRouter(finder UserFinder) (r Router) {
-	r.finger.Finder = finder
+// create a new router given a URLFinder that handles webfinger
+func NewRouter(finder URLFinder) (r Router) {
+	r.finger.Finder = apub.UserFinder(finder)
 	r.mux = http.NewServeMux()
 	r.mux.Handle("/.well-known/webfinger", &r.finger)
 	return

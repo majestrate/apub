@@ -1,8 +1,9 @@
 package apub
 
-import (
-	"wubba/lubba/apub"
-)
+import "net/url"
 
-// UserFinder finds a user given a query
-type UserFinder = apub.UserFinder
+// URLFinder finds a url given a string
+// returns nil, nil on not found
+// returns url, nil on found
+// returns nil, error on error
+type URLFinder func(string) (*url.URL, error)

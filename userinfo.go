@@ -10,7 +10,7 @@ type UserInfo struct {
 	ProfileURL string
 	AtomURL    string
 	InboxURL   string
-	SalmonURL  string
+	OutboxURL  string
 }
 
 func (info *UserInfo) Alias() string {
@@ -33,17 +33,5 @@ func (info *UserInfo) Links() (links []apub.Link) {
 		Type: apub.HTMLMime,
 		Href: info.ProfileURL,
 	}
-	links[2] = apub.Link{
-		Rel:  apub.SalmonRel,
-		Href: info.SalmonURL,
-	}
 	return
-}
-
-// InfoFinder finds a UserInfo given a string
-type InfoFinder interface {
-	// returns nil, nil on not found
-	// returns url, nil on found
-	// returns nil, error on error
-	FindUser(string) (*UserInfo, error)
 }

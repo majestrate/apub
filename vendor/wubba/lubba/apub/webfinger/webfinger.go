@@ -44,9 +44,9 @@ func (wf *WebFinger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", XMLType+"; encoding=utf-8")
 		xml.MarshalHTTP(w, &XRD{
 			NS:      XMLNS,
-			Subject: u.Subject(),
-			Alias:   u.Alias(),
-			Links:   u.Links(),
+			Subject: u.WebFingerSubject(),
+			Alias:   u.WebFingerAlias(),
+			Links:   u.WebFingerLinks(),
 		})
 	}
 }

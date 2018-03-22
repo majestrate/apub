@@ -3,6 +3,8 @@ package apub
 import (
 	"net/http"
 	"wubba/lubba/apub"
+	"wubba/lubba/apub/atom"
+	"wubba/lubba/apub/federation"
 	"wubba/lubba/apub/hostmeta"
 	"wubba/lubba/apub/inbox"
 	"wubba/lubba/apub/outbox"
@@ -18,8 +20,14 @@ type APubHandler struct {
 	outbox    outbox.Handler
 	followers user.FollowersHandler
 	following user.FollowingHandler
+	feeds     atom.Handler
+	federator federation.Federator
 
 	Finder InfoFinder // Finder is responsible for fetching user information
+}
+
+func (a *APubHandler) FederatePost(post *Post) {
+	a.federator.Send(post)
 }
 
 // Setup sets up routes and gives it a InfoFinder
@@ -27,6 +35,9 @@ func (a *APubHandler) Setup(setupRoute func(string, http.Handler), setupSubRoute
 	// set up finder
 
 	localfinder := func(str string) (apub.UserInfo, error) {
+		if a.Finder == nil {
+			return nil, nil
+		}
 		return a.Finder.LocalUser(str)
 	}
 	a.finger.Finder = localfinder
@@ -34,6 +45,7 @@ func (a *APubHandler) Setup(setupRoute func(string, http.Handler), setupSubRoute
 	a.outbox.Finder = localfinder
 	a.followers.Finder = localfinder
 	a.following.Finder = localfinder
+	a.feeds.Finder = localfinder
 
 	a.followers.GetFollowers = func(str string) ([]apub.UserInfo, error) {
 		var infos []apub.UserInfo
@@ -66,8 +78,9 @@ func (a *APubHandler) Setup(setupRoute func(string, http.Handler), setupSubRoute
 	setupRoute("/.well-known/host-meta", &a.hostmeta)
 	setupRoute("/.well-known/webfinger", &a.finger)
 
-	handlers := []apub.UserHandler{&a.inbox, &a.outbox, &a.followers, &a.following}
+	handlers := []apub.UserHandler{&a.inbox, &a.outbox, &a.followers, &a.following, &a.feeds}
 
+	// set up handlers
 	for idx := range handlers {
 		setupSubRouter(handlers[idx].RoutePath(), &apub.BaseHandler{
 			Finder:      localfinder,

@@ -8,7 +8,7 @@ import (
 const RoutePath = "/apub/outbox"
 
 type Handler struct {
-	Finder func(string) (apub.UserInfo, error)
+	apub.BaseHandler
 }
 
 func (h *Handler) RoutePath() string {

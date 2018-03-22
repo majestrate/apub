@@ -8,5 +8,5 @@ type XRD struct {
 	NS      string `xml:"xmlns,attr"`
 	Subject string `xml:"subject"`
 	Alias   string `xml:"alias"`
-	Links   []Link `xml:"link"`
+	Links   []Link `xml:"Link"`
 }

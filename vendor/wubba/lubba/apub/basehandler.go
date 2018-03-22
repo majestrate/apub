@@ -17,14 +17,6 @@ type BaseHandler struct {
 }
 
 func (h *BaseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if h.Finder == nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	if h.UserHandler == nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
 	route := h.UserHandler.RoutePath()
 	username := r.URL.Path[len(route):]
 	for strings.HasPrefix(username, "/") {

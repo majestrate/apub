@@ -31,6 +31,8 @@ type feed struct {
 	NSThr      string       `xml:"xmlns:thr,attr"`
 	NSActivity string       `xml:"xmlns:activity,attr"`
 	NSPoco     string       `xml:"xmlns:poco,attr"`
+	NSOstatus  string       `xml:"xmlns:ostatus,attr"`
+	NSMedia    string       `xml:"xmlns:media,attr"`
 }
 
 func (f Feed) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -47,6 +49,8 @@ func (f Feed) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		NSThr:      apub.ThrXMLNS,
 		NSActivity: apub.ActivityXMLNS,
 		NSPoco:     apub.PocoXMLNS,
+		NSOstatus:  apub.OStatusXMLNS,
+		NSMedia:    apub.MediaXMLNS,
 	})
 }
 

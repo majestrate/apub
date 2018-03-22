@@ -33,19 +33,27 @@ func (h *Handler) ServeUser(info apub.UserInfo, w http.ResponseWriter, r *http.R
 			offset = off
 		}
 	}
-	nextURL, _ := url.Parse(r.URL.String())
-	q := nextURL.Query()
-	q.Set("offset", fmt.Sprintf("%d", (offset+1)*PerPage))
-	nextURL.RawQuery = q.Encode()
-	nextURL.Host = r.Host
-	nextURL.Scheme = "https"
-	feed, err := info.ToAtomFeed("atom feed for "+name, nextURL.String())
+	var next string
+	var feed apub.UserFeed
+	posts, err := info.Posts(offset, PerPage)
 	if err == nil {
-		var posts []apub.Post
-		posts, err = info.Posts(offset, PerPage)
+		if len(posts) < PerPage {
+			// no next url
+		} else {
+			nextURL, _ := url.Parse(r.URL.String())
+			q := nextURL.Query()
+			q.Set("offset", fmt.Sprintf("%d", (offset+1)*PerPage))
+			nextURL.RawQuery = q.Encode()
+			nextURL.Host = r.Host
+			nextURL.Scheme = "https"
+			next = nextURL.String()
+		}
+		feed, err = info.ToAtomFeed("atom feed for "+name, next)
 		if err == nil {
-			for idx := range posts {
-				feed.AppendPost(posts[idx])
+			if err == nil {
+				for idx := range posts {
+					feed.AppendPost(posts[idx])
+				}
 			}
 		}
 	}

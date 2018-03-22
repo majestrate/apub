@@ -23,22 +23,17 @@ type APubHandler struct {
 	feeds     atom.Handler
 	federator federation.Federator
 
-	Finder InfoFinder // Finder is responsible for fetching user information
+	Database Database // Database implements UserFinder
 }
 
-func (a *APubHandler) FederatePost(post *Post) {
-	a.federator.Send(post)
-}
-
-// Setup sets up routes and gives it a InfoFinder
-func (a *APubHandler) Setup(setupRoute func(string, http.Handler), setupSubRouter func(string, http.Handler)) {
+// SetupRoutes sets up routes
+func (a *APubHandler) SetupRoutes(setupRoute func(string, http.Handler), setupSubRouter func(string, http.Handler)) {
 	// set up finder
-
 	localfinder := func(str string) (apub.UserInfo, error) {
-		if a.Finder == nil {
+		if a.Database == nil {
 			return nil, nil
 		}
-		return a.Finder.LocalUser(str)
+		return a.Database.LocalUser(str)
 	}
 	a.finger.Finder = localfinder
 	a.inbox.Finder = localfinder
@@ -47,27 +42,31 @@ func (a *APubHandler) Setup(setupRoute func(string, http.Handler), setupSubRoute
 	a.following.Finder = localfinder
 	a.feeds.Finder = localfinder
 
-	a.followers.GetFollowers = func(str string) ([]apub.UserInfo, error) {
-		var infos []apub.UserInfo
-		users, err := a.Finder.ListFollowers(str)
-		if err == nil {
-			if len(users) > 0 {
-				infos = make([]apub.UserInfo, len(users))
-				for idx := range users {
-					infos[idx] = users[idx]
+	a.followers.GetFollowers = func(str string) (infos []apub.UserInfo, err error) {
+		if a.Database != nil {
+			var users []*UserInfo
+			users, err = a.Database.ListFollowers(str)
+			if err == nil {
+				if len(users) > 0 {
+					infos = make([]apub.UserInfo, len(users))
+					for idx := range users {
+						infos[idx] = users[idx]
+					}
 				}
 			}
 		}
 		return infos, err
 	}
-	a.following.GetFollowing = func(str string) ([]apub.UserInfo, error) {
-		var infos []apub.UserInfo
-		users, err := a.Finder.ListFollowing(str)
-		if err == nil {
-			if len(users) > 0 {
-				infos = make([]apub.UserInfo, len(users))
-				for idx := range users {
-					infos[idx] = users[idx]
+	a.following.GetFollowing = func(str string) (infos []apub.UserInfo, err error) {
+		var users []*UserInfo
+		if a.Database != nil {
+			users, err = a.Database.ListFollowing(str)
+			if err == nil {
+				if len(users) > 0 {
+					infos = make([]apub.UserInfo, len(users))
+					for idx := range users {
+						infos[idx] = users[idx]
+					}
 				}
 			}
 		}

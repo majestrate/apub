@@ -1,7 +1,6 @@
 package apub
 
 import (
-	"encoding/xml"
 	"time"
 )
 
@@ -12,6 +11,4 @@ type Post interface {
 	PostedAt() time.Time
 	PostURL() string
 	FeedURL() string
-	xml.Marshaler
-	xml.Unmarshaler
 }

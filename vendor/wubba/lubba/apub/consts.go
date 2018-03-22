@@ -18,3 +18,6 @@ const AtomXMLNS = "http://www.w3.org/2005/Atom"
 const ThrXMLNS = "http://purl.org/syndication/thread/1.0"
 const ActivityXMLNS = "http://activitystrea.ms/spec/1.0/"
 const PocoXMLNS = "http://portablecontacts.net/spec/1.0"
+
+const MediaXMLNS = "http://purl.org/syndication/atommedia"
+const OStatusXMLNS = "http://ostatus.org/schema/1.0"

@@ -30,6 +30,18 @@ func (u UserName) User() string {
 	return ""
 }
 
+// NormalizeUser converts a string into a UserName given our local server name
+func NormalizeUser(str, ourserver string) UserName {
+	if str[0] != '@' {
+		str = "@" + str
+	}
+	u := UserName(str)
+	if u.Server() == "" {
+		u = UserName(str + "@" + ourserver)
+	}
+	return u
+}
+
 // server part
 func (u UserName) Server() string {
 	parts := strings.Split(u.String(), "@")
@@ -121,22 +133,25 @@ func (info *UserInfo) ToAtomFeed(title string, nextURL string) (f apub.UserFeed,
 	feedURL := info.AtomFeedURL()
 	profile := info.ProfileURL()
 	updated := info.LastUpdated()
+	feedLinks := []apub.Link{
+		apub.Link{
+			Rel:  apub.SelfRel,
+			Href: feedURL,
+			Type: apub.AtomMime,
+		},
+	}
+	if nextURL != "" {
+		feedLinks = append(feedLinks, apub.Link{
+			Rel:  apub.NextRel,
+			Href: nextURL,
+			Type: apub.AtomMime,
+		})
+	}
 	f = &atom.Feed{
 		Published: updated,
 		Updated:   updated,
 		Logo:      info.Avatar,
-		Links: []apub.Link{
-			apub.Link{
-				Rel:  apub.SelfRel,
-				Href: feedURL,
-				Type: apub.AtomMime,
-			},
-			apub.Link{
-				Rel:  apub.NextRel,
-				Href: nextURL,
-				Type: apub.AtomMime,
-			},
-		},
+		Links:     feedLinks,
 		Author: model.Author{
 			ID:           profile,
 			DisplayName:  info.PreferedName,

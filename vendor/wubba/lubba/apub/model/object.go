@@ -16,4 +16,5 @@ type Object struct {
 	Updated   time.Time `xml:"updated"`
 	Content   Content   `xml:"content"`
 	Links     []Link    `xml:"link"`
+	Object    *Object   `xml:"activity:object"`
 }

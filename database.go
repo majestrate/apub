@@ -3,6 +3,9 @@ package apub
 // Database defines an interface for interacting with a persistant datastore for posts and user information
 type Database interface {
 
+	// return the local server's hostname
+	LocalHost() string
+
 	// LocalUser gets a local user by username
 	// returns user, nil on found
 	// returns nil, nil on not found

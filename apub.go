@@ -33,7 +33,8 @@ func (a *APubHandler) SetupRoutes(setupRoute func(string, http.Handler), setupSu
 		if a.Database == nil {
 			return nil, nil
 		}
-		return a.Database.LocalUser(str)
+		user := NormalizeUser(str, a.Database.LocalHost())
+		return a.Database.LocalUser(user.User())
 	}
 	a.finger.Finder = localfinder
 	a.inbox.Finder = localfinder

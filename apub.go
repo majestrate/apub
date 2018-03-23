@@ -23,7 +23,7 @@ type APubHandler struct {
 	feeds     atom.Handler
 	federator federation.Federator
 
-	Database Database // Database implements UserFinder
+	Database Database // Database must not be nil
 }
 
 // SetupRoutes sets up routes

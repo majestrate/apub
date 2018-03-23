@@ -90,7 +90,7 @@ func main() {
 	demo.SetupRoutes(func(path string, handler http.Handler) {
 		r.Any(path, gin.WrapH(handler))
 	}, func(subpath string, handler http.Handler) {
-		r.Group(subpath).Any("/:username", gin.WrapH(handler))
+		r.Group(subpath).Any("/:extra", gin.WrapH(handler))
 	})
 
 	// serve profile page
@@ -105,9 +105,7 @@ func main() {
 			c.String(http.StatusNotFound, "no such user")
 			return
 		}
-		c.HTML(http.StatusOK, "profile.html", gin.H{
-			"user": user,
-		})
+		c.String(http.StatusOK, user.User())
 	})
 
 	logrus.Infof("listening on %s", addr)

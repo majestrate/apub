@@ -24,10 +24,7 @@ func (h *Handler) RoutePath() string {
 }
 
 func (h *Handler) ServeUser(info apub.UserInfo, w http.ResponseWriter, r *http.Request) {
-	if info == nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
+	log.Printf("serve atom feed: %q", info)
 	name := info.User()
 	offsetStr := r.URL.Query().Get("offset")
 	var offset int64

@@ -45,31 +45,13 @@ func (a *APubHandler) SetupRoutes(setupRoute func(string, http.Handler), setupSu
 
 	a.followers.GetFollowers = func(str string) (infos []User, err error) {
 		if a.Database != nil {
-			var users []*UserInfo
-			users, err = a.Database.ListFollowers(str)
-			if err == nil {
-				if len(users) > 0 {
-					infos = make([]User, len(users))
-					for idx := range users {
-						infos[idx] = users[idx]
-					}
-				}
-			}
+			infos, err = a.Database.ListFollowers(str)
 		}
 		return infos, err
 	}
 	a.following.GetFollowing = func(str string) (infos []User, err error) {
-		var users []*UserInfo
 		if a.Database != nil {
-			users, err = a.Database.ListFollowing(str)
-			if err == nil {
-				if len(users) > 0 {
-					infos = make([]User, len(users))
-					for idx := range users {
-						infos[idx] = users[idx]
-					}
-				}
-			}
+			infos, err = a.Database.ListFollowing(str)
 		}
 		return infos, err
 	}

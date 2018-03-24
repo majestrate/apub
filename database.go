@@ -10,7 +10,7 @@ type Database interface {
 	// returns user, nil on found
 	// returns nil, nil on not found
 	// returns nil, error on db error
-	LocalUser(username string) (*UserInfo, error)
+	LocalUser(username string) (User, error)
 
 	// LocalPost gets a local post by post id
 	// returns post, nil on post found
@@ -24,6 +24,6 @@ type Database interface {
 	// returns nil, err on db error
 	LocalUserPosts(username string, offset int64, limit int) ([]*Post, error)
 
-	ListFollowers(username string) ([]*UserInfo, error)
-	ListFollowing(username string) ([]*UserInfo, error)
+	ListFollowers(username string) ([]User, error)
+	ListFollowing(username string) ([]User, error)
 }

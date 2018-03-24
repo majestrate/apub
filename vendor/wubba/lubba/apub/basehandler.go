@@ -32,7 +32,5 @@ func (h *BaseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-
 	h.UserHandler.ServeUser(u, w, r)
-
 }

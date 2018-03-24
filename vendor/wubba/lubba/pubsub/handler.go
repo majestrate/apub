@@ -6,7 +6,7 @@ import (
 )
 
 type Transport struct {
-	Finder func(string) (apub.UserInfo, error)
+	Finder func(string) (apub.User, error)
 }
 
 func (h *Transport) Broadcast(post apub.Post) (err error) {

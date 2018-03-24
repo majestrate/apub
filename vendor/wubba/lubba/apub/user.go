@@ -11,7 +11,7 @@ type UserFeed interface {
 }
 
 // serializable user info
-type UserInfo interface {
+type User interface {
 	WebFingerSubject() string
 	WebFingerAlias() string
 	WebFingerLinks() []Link

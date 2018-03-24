@@ -23,7 +23,7 @@ func (h *Handler) RoutePath() string {
 	return RoutePath
 }
 
-func (h *Handler) ServeUser(info apub.UserInfo, w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ServeUser(info apub.User, w http.ResponseWriter, r *http.Request) {
 	log.Printf("serve atom feed: %q", info)
 	name := info.User()
 	offsetStr := r.URL.Query().Get("offset")

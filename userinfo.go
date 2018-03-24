@@ -14,6 +14,8 @@ import (
 	"wubba/lubba/apub/util"
 )
 
+type User = apub.User
+
 // UserName is the @user@host
 type UserName string
 
@@ -51,7 +53,7 @@ func (u UserName) Server() string {
 	return ""
 }
 
-// implements apub.UserInfo
+// implements apub.User
 type UserInfo struct {
 	ServerName   string // server name
 	UserName     string // username without '@'

@@ -29,7 +29,7 @@ type APubHandler struct {
 // SetupRoutes sets up routes
 func (a *APubHandler) SetupRoutes(setupRoute func(string, http.Handler), setupSubRouter func(string, http.Handler)) {
 	// set up finder
-	localfinder := func(str string) (apub.UserInfo, error) {
+	localfinder := func(str string) (User, error) {
 		if a.Database == nil {
 			return nil, nil
 		}
@@ -43,13 +43,13 @@ func (a *APubHandler) SetupRoutes(setupRoute func(string, http.Handler), setupSu
 	a.following.Finder = localfinder
 	a.feeds.Finder = localfinder
 
-	a.followers.GetFollowers = func(str string) (infos []apub.UserInfo, err error) {
+	a.followers.GetFollowers = func(str string) (infos []User, err error) {
 		if a.Database != nil {
 			var users []*UserInfo
 			users, err = a.Database.ListFollowers(str)
 			if err == nil {
 				if len(users) > 0 {
-					infos = make([]apub.UserInfo, len(users))
+					infos = make([]User, len(users))
 					for idx := range users {
 						infos[idx] = users[idx]
 					}
@@ -58,13 +58,13 @@ func (a *APubHandler) SetupRoutes(setupRoute func(string, http.Handler), setupSu
 		}
 		return infos, err
 	}
-	a.following.GetFollowing = func(str string) (infos []apub.UserInfo, err error) {
+	a.following.GetFollowing = func(str string) (infos []User, err error) {
 		var users []*UserInfo
 		if a.Database != nil {
 			users, err = a.Database.ListFollowing(str)
 			if err == nil {
 				if len(users) > 0 {
-					infos = make([]apub.UserInfo, len(users))
+					infos = make([]User, len(users))
 					for idx := range users {
 						infos[idx] = users[idx]
 					}

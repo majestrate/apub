@@ -8,11 +8,11 @@ import (
 
 type UserHandler interface {
 	RoutePath() string
-	ServeUser(UserInfo, http.ResponseWriter, *http.Request)
+	ServeUser(User, http.ResponseWriter, *http.Request)
 }
 
 type BaseHandler struct {
-	Finder      func(string) (UserInfo, error)
+	Finder      func(string) (User, error)
 	UserHandler UserHandler
 }
 

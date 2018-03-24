@@ -8,7 +8,7 @@ import (
 )
 
 type WebFinger struct {
-	Finder func(string) (apub.UserInfo, error)
+	Finder func(string) (apub.User, error)
 }
 
 func (wf *WebFinger) ServeHTTP(w http.ResponseWriter, r *http.Request) {

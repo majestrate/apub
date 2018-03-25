@@ -54,6 +54,7 @@ func (u UserName) Server() string {
 	return ""
 }
 
+// local user
 // implements apub.User
 type UserInfo struct {
 	ServerName   string // server name
@@ -138,10 +139,28 @@ func (info *UserInfo) LoadPrivateKey(pemStr string) (err error) {
 }
 
 func (info *UserInfo) MarshalJSON() ([]byte, error) {
-	return json.Marshal(model.Object{
-		Type: model.PersonType,
-		ID:   info.ProfileURL(),
-		Name: info.UserName,
+	profileURL := info.ProfileURL()
+	return json.Marshal(model.Person{
+		Context: model.StdContext,
+		Endpoints: model.EndpointMap{
+			SharedInbox: "https://" + info.ServerName + "/apub/inbox",
+		},
+		ID:     profileURL,
+		URL:    profileURL,
+		Name:   info.UserName,
+		Inbox:  info.InboxURL(),
+		Outbox: info.OutboxURL(),
+		PublicKey: model.PublicKey{
+			ID:    profileURL + "#main-key",
+			Owner: profileURL,
+			Key:   &info.SigningKey.PublicKey,
+		},
+		Image: model.Image{
+			URL: info.Header,
+		},
+		Icon: model.Image{
+			URL: info.Avatar,
+		},
 	})
 }
 

@@ -37,5 +37,4 @@ type User interface {
 	Posts(offset int64, limit int) ([]Post, error)
 
 	json.Marshaler
-	json.Unmarshaler
 }

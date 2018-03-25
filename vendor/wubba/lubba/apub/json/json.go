@@ -1,26 +1,30 @@
 package json
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/mailru/easyjson"
-	"github.com/mailru/easyjson/jwriter"
 	"io"
 	"net/http"
 )
 
-type Marshaler = easyjson.Marshaler
+type Marshaler = json.Marshaler
+type Unmarshaler = json.Unmarshaler
 
-var MarshalToWriter = easyjson.MarshalToWriter
+var Marshal = json.Marshal
+var Unmarshal = json.Unmarshal
+var NewDecoder = json.NewDecoder
+var NewEncoder = json.NewEncoder
 
 func MarshalHTTP(w http.ResponseWriter, obj Marshaler) error {
-	var jw jwriter.Writer
-	obj.MarshalEasyJSON(&jw)
-	if jw.Error != nil {
+	buff := new(Buffer)
+	enc := NewEncoder(buff)
+	err := enc.Encode(obj)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, jw.Error.Error())
-		return jw.Error
+		io.WriteString(w, err.Error())
+		return err
 	}
-	w.Header().Set("Content-Length", fmt.Sprintf("%d", jw.Size()))
-	_, err := jw.DumpTo(w)
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", buff.Len()))
+	_, err = io.Copy(w, buff)
 	return err
 }

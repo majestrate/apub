@@ -8,3 +8,8 @@ const TypePerson = ap_prefix + "person"
 
 const VerbPost = ap_prefix + "post"
 const VerbShare = ap_prefix + "share"
+
+const ActivityStreams = "http://www.w3.org/ns/activitystreams"
+
+const LinkType = "Link"
+const ObjectType = "Object"

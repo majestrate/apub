@@ -14,7 +14,7 @@ type Person struct {
 type apPerson struct {
 	Context   string    `json:"@context"`
 	Type      string    `json:"type"`
-	Name      string    `json:name"`
+	Name      string    `json:"name"`
 	URL       string    `json:"url"`
 	PublicKey PublicKey `json:"publicKey"`
 }

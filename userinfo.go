@@ -131,6 +131,11 @@ func (info *UserInfo) LastUpdated() time.Time {
 	return info.GetLastUpdated()
 }
 
+func (info *UserInfo) LoadPrivateKey(pemStr string) (err error) {
+	info.SigningKey, err = util.LoadPrivateKey([]byte(pemStr))
+	return
+}
+
 func (info *UserInfo) ToAtomFeed(title string, nextURL string) (f apub.UserFeed, err error) {
 	feedURL := info.AtomFeedURL()
 	profile := info.ProfileURL()

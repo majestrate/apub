@@ -7,25 +7,31 @@ import (
 	"io/ioutil"
 )
 
-func StorePrivateKey(keyfile string, k *rsa.PrivateKey) error {
+func DumpPrivkey(k *rsa.PrivateKey) (data []byte) {
 	d := x509.MarshalPKCS1PrivateKey(k)
 	block := &pem.Block{
 		Bytes: d,
-		Headers: map[string]string{
-			"Comment": "I've turned myself into an RSA Private key!!! I'm crypto RIIIIICK!!!!!",
-		},
-		Type: "RSA PRIVATE KEY",
+		Type:  "RSA PRIVATE KEY",
 	}
-	return ioutil.WriteFile(keyfile, pem.EncodeToMemory(block), 0600)
+	return pem.EncodeToMemory(block)
 }
 
-func LoadPrivateKey(keyfile string) (k *rsa.PrivateKey, err error) {
+func LoadPrivateKey(data []byte) (k *rsa.PrivateKey, err error) {
+	var block *pem.Block
+	block, _ = pem.Decode(data)
+	k, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	return
+}
+
+func StorePrivateKeyFile(keyfile string, k *rsa.PrivateKey) error {
+	return ioutil.WriteFile(keyfile, DumpPrivkey(k), 0600)
+}
+
+func LoadPrivateKeyFile(keyfile string) (k *rsa.PrivateKey, err error) {
 	var data []byte
 	data, err = ioutil.ReadFile(keyfile)
 	if err == nil {
-		var block *pem.Block
-		block, _ = pem.Decode(data)
-		k, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+		k, err = LoadPrivateKey(data)
 	}
 	return
 }

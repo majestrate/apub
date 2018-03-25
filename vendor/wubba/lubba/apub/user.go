@@ -3,6 +3,7 @@ package apub
 import (
 	"io"
 	"time"
+	"wubba/lubba/apub/json"
 )
 
 type UserFeed interface {
@@ -34,4 +35,7 @@ type User interface {
 	Sign(io.Reader) ([]byte, []byte, error)
 
 	Posts(offset int64, limit int) ([]Post, error)
+
+	json.Marshaler
+	json.Unmarshaler
 }

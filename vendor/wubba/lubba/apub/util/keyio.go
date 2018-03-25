@@ -7,6 +7,22 @@ import (
 	"io/ioutil"
 )
 
+func DumpPubkey(k *rsa.PublicKey) (data []byte) {
+	d := x509.MarshalPKCS1PublicKey(k)
+	block := &pem.Block{
+		Bytes: d,
+		Type:  "RSA PUBLIC KEY",
+	}
+	return pem.EncodeToMemory(block)
+}
+
+func LoadPubkey(data []byte) (k *rsa.PublicKey, err error) {
+	var block *pem.Block
+	block, _ = pem.Decode(data)
+	k, err = x509.ParsePKCS1PublicKey(block.Bytes)
+	return
+}
+
 func DumpPrivkey(k *rsa.PrivateKey) (data []byte) {
 	d := x509.MarshalPKCS1PrivateKey(k)
 	block := &pem.Block{

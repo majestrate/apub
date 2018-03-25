@@ -13,3 +13,4 @@ const ActivityStreams = "http://www.w3.org/ns/activitystreams"
 
 const LinkType = "Link"
 const ObjectType = "Object"
+const PersonType = "Person"

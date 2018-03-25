@@ -51,16 +51,16 @@ func (p *Post) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 type entry struct {
-	model.Object
+	model.XMLObject
 }
 
 func (p *Post) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return e.EncodeElement(&entry{
-		model.Object{
+		model.XMLObject{
 			Type: model.TypeNote,
 			Verb: model.VerbPost,
 			ID:   p.PostURL(),
-			Content: model.Content{
+			Content: model.XMLContent{
 				Data: p.HTML(),
 				Type: "html",
 			},

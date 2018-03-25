@@ -10,6 +10,7 @@ import (
 	"time"
 	"wubba/lubba/apub"
 	"wubba/lubba/apub/atom"
+	"wubba/lubba/apub/json"
 	"wubba/lubba/apub/model"
 	"wubba/lubba/apub/util"
 )
@@ -134,6 +135,14 @@ func (info *UserInfo) LastUpdated() time.Time {
 func (info *UserInfo) LoadPrivateKey(pemStr string) (err error) {
 	info.SigningKey, err = util.LoadPrivateKey([]byte(pemStr))
 	return
+}
+
+func (info *UserInfo) MarshalJSON() ([]byte, error) {
+	return json.Marshal(model.Object{
+		Type: model.PersonType,
+		ID:   info.ProfileURL(),
+		Name: info.UserName,
+	})
 }
 
 func (info *UserInfo) ToAtomFeed(title string, nextURL string) (f apub.UserFeed, err error) {

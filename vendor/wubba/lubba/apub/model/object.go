@@ -3,25 +3,21 @@ package model
 import "time"
 import "wubba/lubba/apub/json"
 
-type Content struct {
+type XMLContent struct {
 	Data string `xml:",chardata"`
 	Type string `xml:"type,attr"`
 }
 
-type Object struct {
-	Type      string    `xml:"activity:object-type"`
-	ID        string    `xml:"id"`
-	Title     string    `xml:"title"`
-	Verb      string    `xml:"activity:verb"`
-	Published time.Time `xml:"published"`
-	Updated   time.Time `xml:"updated"`
-	Content   Content   `xml:"content"`
-	Links     []Link    `xml:"link"`
-	Object    *Object   `xml:"activity:object"`
-}
-
-func (o *Object) APType() string {
-	return ObjectType
+type XMLObject struct {
+	Type      string     `xml:"activity:object-type"`
+	ID        string     `xml:"id"`
+	Title     string     `xml:"title"`
+	Verb      string     `xml:"activity:verb"`
+	Published time.Time  `xml:"published"`
+	Updated   time.Time  `xml:"updated"`
+	Content   XMLContent `xml:"content"`
+	Links     []Link     `xml:"link"`
+	Object    *XMLObject `xml:"activity:object"`
 }
 
 type apObject struct {
@@ -32,13 +28,21 @@ type apObject struct {
 	Content string `json:"content"`
 }
 
+type Object struct {
+	Type    string
+	ID      string
+	Content string
+	Name    string
+}
+
 func (o *Object) UnmarshalJSON(data []byte) error {
 	var ap apObject
 	err := json.Unmarshal(data, &ap)
 	if err == nil {
 		o.Type = ap.Type
-		o.Title = ap.Name
-		o.Content.Data = ap.Content
+		o.ID = ap.ID
+		o.Content = ap.Content
+		o.Name = ap.Name
 	}
 	return err
 }
@@ -46,9 +50,9 @@ func (o *Object) UnmarshalJSON(data []byte) error {
 func (o Object) MarshalJSON() ([]byte, error) {
 	return json.Marshal(apObject{
 		Context: ActivityStreams,
-		Type:    ObjectType,
+		Type:    o.Type,
 		ID:      o.ID,
-		Name:    o.Title,
-		Content: o.Content.Data,
+		Content: o.Content,
+		Name:    o.Name,
 	})
 }
